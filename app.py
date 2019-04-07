@@ -1,6 +1,7 @@
 from pyzbar import pyzbar
 from imutils.video import VideoStream
 from imutils.video import FPS
+from modules.detect_barcodes import Detector
 
 import argparse as ap
 import numpy as np
@@ -20,11 +21,15 @@ args_parser.add_argument("-o", "--output", type=str, default="barcodes.csv",
 args = vars(args_parser.parse_args())
 # end of parser
 
+def scale_image(image):
+    scale = 800.0 / image.shape[1]
+    image = cv2.resize(image, (int(image.shape[1] * scale), int(image.shape[0] * scale)))
+    return image
+
 # start streaming by the webcam (src=0 for webcam)
 print("[INFO]:: starting video stream...")
 video_stream = VideoStream(src=0).start()
-time.sleep(2)
-fps = FPS()
+time.sleep(1)
 
 # open the output CSV file for writing and initialize the set of
 # barcodes found thus far
@@ -36,7 +41,8 @@ while True:
     # grab the frame from the threaded video stream and resize it to
     # # have a maximum width of 400 pixels
     frame = video_stream.read()
-    frame = imutils.resize(frame, width=600)
+    # frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
+    frame = scale_image(frame)
     
     # find the barcodes in the frame and decode each of the barcodes
     barcodes = pyzbar.decode(frame)
@@ -77,6 +83,7 @@ while True:
     
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):
+        out = cv2.imwrite('capture.jpg', frame)
         break
 
 # close the output CSV file do a bit of cleanup
