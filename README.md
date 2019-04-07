@@ -1,2 +1,2 @@
 # BARRKODA
-![alt text](https://github.com/buraktekin/barrkoda/blob/development/assets/images/logo.png "Project Logo")
+![alt text](https://github.com/buraktekin/barrkoda/blob/master/assets/images/logo.png "Project Logo")
